@@ -1,6 +1,7 @@
 package com.cos.jwt.config;
 
 import com.cos.jwt.config.jwt.JwtAuthenticationFilter;
+import com.cos.jwt.config.jwt.JwtProperties;
 import com.cos.jwt.filter.MyFilter1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +35,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager, JwtProperties jwtProperties) throws Exception {
         http.addFilterBefore(new MyFilter1(), SecurityContextHolderFilter.class);
         /**
          * JWT(JSON Web Token) 기반 인증을 사용할 때는 CSRF 보호가 필요 X
@@ -43,7 +44,7 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable);
         http
                 .addFilter(corsFilter)
-                .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProperties))
                 /**
                  * 세션을 사용하지 않도록 설정
                  * JWT를 사용하면 세션을 저장할 필요가 없기 때문에 STATELESS(무상태)로 설정
