@@ -2,6 +2,7 @@ package com.cos.jwt.config.auth;
 
 import com.cos.jwt.model.User;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @AllArgsConstructor
+@Data
 public class PrincipalDetails implements UserDetails {
 
     private User user;
