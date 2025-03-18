@@ -1,5 +1,6 @@
 package com.cos.jwt.config;
 
+import com.cos.jwt.filter.MyFilter1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,9 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -21,6 +25,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.addFilterBefore(new MyFilter1(), SecurityContextHolderFilter.class);
         /**
          * JWT(JSON Web Token) 기반 인증을 사용할 때는 CSRF 보호가 필요 X
          * CSRF는 세션 기반 인증(쿠키 기반)에서 주로 문제가 되는데, JWT는 쿠키를 사용하지 않으므로 비활성화
@@ -43,6 +48,7 @@ public class SecurityConfig {
                 /**
                  * HTTP Basic 인증은 Authorization 헤더에 ID/PW를 담아 요청하는 방식
                  * 보안이 취약하므로 JWT를 사용하면 필요 X
+                 * JWT는 Authorization 헤더에 JWT를 담아 요청하는 방식
                  */
                 .httpBasic(HttpBasicConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
@@ -52,7 +58,6 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
 
                 );
-
         return http.build();
     }
 }
