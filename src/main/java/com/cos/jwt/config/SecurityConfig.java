@@ -1,6 +1,7 @@
 package com.cos.jwt.config;
 
 import com.cos.jwt.config.jwt.JwtAuthenticationFilter;
+import com.cos.jwt.config.jwt.JwtAuthorizationFilter;
 import com.cos.jwt.config.jwt.JwtProperties;
 import com.cos.jwt.filter.MyFilter1;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,8 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable);
         http
                 .addFilter(corsFilter)
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProperties))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProperties)) // 로그인 성공 시, JWT 발급하는 필터
+                .addFilter(new JwtAuthorizationFilter(authenticationManager, jwtProperties)) // 로그인 후, 인증이나 권한이 필요한 주소 요청 시, JWT가 유효한지 체크하는 필터
                 /**
                  * 세션을 사용하지 않도록 설정
                  * JWT를 사용하면 세션을 저장할 필요가 없기 때문에 STATELESS(무상태)로 설정
